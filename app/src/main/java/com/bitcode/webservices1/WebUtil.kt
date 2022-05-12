@@ -126,5 +126,43 @@ class WebUtil {
 
         }
 
+        fun getUsersListWithGsonUpdate1(pageNumber: Int) : UserResponseNew? {
+
+            var url = URL("https://reqres.in/api/users?page=$pageNumber")
+            var httpURLConnection = url.openConnection() as HttpURLConnection
+            httpURLConnection.requestMethod = "GET"
+
+            httpURLConnection.connect()
+
+            if (httpURLConnection.responseCode != 200) {
+                log("Fetching users failed...")
+                return null
+            }
+
+            var responseBuffer = StringBuffer()
+            var data = ByteArray(1024 * 1)
+            var count = 0;
+
+            while (true) {
+                count = httpURLConnection.inputStream.read(data)
+                if (count == -1) {
+                    break
+                }
+                responseBuffer.append(String(data, 0, count))
+            }
+
+            httpURLConnection.inputStream.close()
+            log(responseBuffer.toString())
+
+            var gson = Gson()
+            var userResponseNew = gson.fromJson<UserResponseNew>(
+                responseBuffer.toString(),
+                UserResponseNew::class.java
+            )
+
+            return userResponseNew
+
+        }
+
     }
 }

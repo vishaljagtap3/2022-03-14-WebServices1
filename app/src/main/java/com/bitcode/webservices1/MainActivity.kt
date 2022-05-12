@@ -30,6 +30,27 @@ class MainActivity : AppCompatActivity() {
         binding.btnGetUserListWithGson.setOnClickListener {
             WebThread1(UserHandler1()).execute(null)
         }
+
+        binding.btnGetUserListWithGsonUpdate1.setOnClickListener {
+            WebThread2(UserHandler2()).execute(null)
+        }
+    }
+
+    class UserHandler2 : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+
+            var userResponseNew = msg.obj as UserResponseNew
+
+            Log.e("tag", "Current page: ${userResponseNew.currentPage}")
+            Log.e("tag", "Items per page: ${userResponseNew.itemsPerPage}")
+            Log.e("tag", "Total pages: ${userResponseNew.totalPages}")
+
+            for(user in userResponseNew.users) {
+                Log.e("tag", "${user.id} ${user.first_name}")
+            }
+
+        }
     }
 
     class UserHandler1  : Handler() {
@@ -45,7 +66,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-//
+
     class UsersHandler : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
