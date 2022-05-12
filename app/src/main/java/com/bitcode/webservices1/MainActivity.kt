@@ -26,6 +26,24 @@ class MainActivity : AppCompatActivity() {
         binding.btnGetUserList.setOnClickListener {
             WebThread(UsersHandler()).execute(null)
         }
+
+        binding.btnGetUserListWithGson.setOnClickListener {
+            WebThread1(UserHandler1()).execute(null)
+        }
+    }
+
+    class UserHandler1  : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            var userResponse = msg.obj as UserResponse
+            Log.e("tag", "Page - ${userResponse.page}")
+            Log.e("tag", "Per page: ${userResponse.per_page}")
+            Log.e("tag", "total pages: ${userResponse.total_pages}")
+
+            for(userNew in userResponse.data) {
+                Log.e("tag", "${userNew.id} - ${userNew.email} - ${userNew.first_name + userNew.last_name} - ${userNew.avatar}")
+            }
+        }
     }
 
     class UsersHandler : Handler() {

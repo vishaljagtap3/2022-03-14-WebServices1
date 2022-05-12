@@ -19,4 +19,10 @@
         android:text="Get user list"
         android:id="@+id/btnGetUserList" />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get user list with Gson"
+        android:id="@+id/btnGetUserListWithGson" />
+
 </LinearLayout>

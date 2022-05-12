@@ -1,6 +1,7 @@
 package com.bitcode.webservices1
 
 import android.util.Log
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -38,8 +39,10 @@ class WebUtil {
         }
 
         fun getUsersList(pageNumber: Int) : ArrayList<User>? {
+
             var url = URL("https://reqres.in/api/users?page=$pageNumber")
             var httpURLConnection = url.openConnection() as HttpURLConnection
+            httpURLConnection.requestMethod = "GET"
 
             httpURLConnection.connect()
 
@@ -82,6 +85,44 @@ class WebUtil {
             }
 
             return usersList
+
+        }
+
+        fun getUsersListWithGson(pageNumber: Int) : UserResponse? {
+
+            var url = URL("https://reqres.in/api/users?page=$pageNumber")
+            var httpURLConnection = url.openConnection() as HttpURLConnection
+            httpURLConnection.requestMethod = "GET"
+
+            httpURLConnection.connect()
+
+            if (httpURLConnection.responseCode != 200) {
+                log("Fetching users failed...")
+                return null
+            }
+
+            var responseBuffer = StringBuffer()
+            var data = ByteArray(1024 * 1)
+            var count = 0;
+
+            while (true) {
+                count = httpURLConnection.inputStream.read(data)
+                if (count == -1) {
+                    break
+                }
+                responseBuffer.append(String(data, 0, count))
+            }
+
+            httpURLConnection.inputStream.close()
+            log(responseBuffer.toString())
+
+            var gson = Gson()
+            var userResponse = gson.fromJson<UserResponse>(
+                responseBuffer.toString(),
+                UserResponse::class.java
+            )
+
+            return userResponse
 
         }
 
